@@ -162,6 +162,8 @@ function setupLevelSystem(client) {
 
         if (interaction.commandName === 'leaderboard') {
             try {
+                await interaction.deferReply(); // Acknowledge the interaction to avoid timeout
+
                 const topUsers = await Level.find().sort({ level: -1, xp: -1 }).limit(10);
 
                 const leaderboardEmbed = new EmbedBuilder()
@@ -192,15 +194,17 @@ function setupLevelSystem(client) {
                     });
                 }
 
-                await interaction.reply({
+                // Send the embed as a reply
+                await interaction.editReply({
                     embeds: [leaderboardEmbed],
-                    ephemeral: false,
                 });
             } catch (error) {
                 console.error('Error handling /leaderboard command:', error);
-                await interaction.reply({
-                    content: 'An error occurred while processing your request.',
-                });
+                if (!interaction.replied) {
+                    await interaction.editReply({
+                        content: 'An error occurred while processing your request.',
+                    });
+                }
             }
         }
     });
