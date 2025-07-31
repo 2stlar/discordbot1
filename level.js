@@ -140,11 +140,16 @@ function setupLevelSystem(client) {
 
 if (leveledUp) {
     const levelUpChannel = client.channels.cache.get('1400588951323934830'); // Get the channel by ID
-    const displayName = message.member?.displayName || message.author.username; // Fallback if member is undefined
+    if (levelUpChannel) {
+        const levelUpEmbed = new EmbedBuilder()
+            .setTitle('Level Up')
+            .setColor('#FFD700')
+            .setDescription(`${message.member?.displayName || message.author.username} leveled up to **Level ${leveledUp}**!`)
 
-    levelUpChannel.send(
-        `<${displayName}> leveled up to **Level ${leveledUp}**!`,
-    );
+        levelUpChannel.send({ embeds: [levelUpEmbed] });
+    } else {
+        console.error('Level-up channel not found.');
+    }
 }
 
     });
