@@ -137,16 +137,16 @@ function setupLevelSystem(client) {
         xpCooldowns.set(message.author.id, now);
 
         const leveledUp = await addXp(message.author.id, Math.floor(Math.random() * 10) + 5); // 5-15 XP per message
-        if (leveledUp) {
-            const levelUpChannel = client.channels.cache.get('1400588951323934830'); // Get the channel by ID
-            if (levelUpChannel) {
-                levelUpChannel.send(`${message.author.username} leveled up to **${leveledUp}**! 🎉`);
-            } else {
-                console.error('Level-up channel not found.');
-                return;
-            }
-             channel.send(`<@${user.id}> leveled up to **Level ${leveledUp}**!`);
-        }
+
+if (leveledUp) {
+    const levelUpChannel = client.channels.cache.get('1400588951323934830'); // Get the channel by ID
+    const displayName = message.member?.displayName || message.author.username; // Fallback if member is undefined
+
+    levelUpChannel.send(
+        `<${displayName}> leveled up to **Level ${leveledUp}**!`,
+    );
+}
+
     });
 
     // /level command
@@ -213,7 +213,7 @@ function setupLevelSystem(client) {
             } catch (error) {
                 console.error('Error handling /leaderboard command:', error);
 
-                // Handle cases where the interaction might not have been replied to
+                // Ensure the interaction is only replied to once
                 if (!interaction.replied && !interaction.deferred) {
                     await interaction.reply({
                         content: 'An error occurred while processing your request.',
