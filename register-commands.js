@@ -122,6 +122,11 @@ const commands = [
         description: 'Show the top users by level',
         options: [],
     },
+    {
+        name: 'reload',
+        description: 'Push changes to GitHub and restart the bot (Admin only)',
+        options: [],
+    },
 ];
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
