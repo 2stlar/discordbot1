@@ -178,17 +178,17 @@ function setupLevelSystem(client) {
                         totalXp += getLevelXp(lvl);
                     }
 
-                    // Fetch the username from the Discord API
-                    let username = `Unknown User (${user.userId})`;
+                    // Fetch the user's display name from the Discord API
+                    let displayName = `Unknown User (${user.userId})`;
                     try {
                         const fetchedUser = await interaction.client.users.fetch(user.userId);
-                        username = fetchedUser.username;
+                        displayName = fetchedUser.username; // Use the username as plain text
                     } catch (error) {
                         console.error(`Failed to fetch user with ID ${user.userId}:`, error);
                     }
 
                     leaderboardEmbed.addFields({
-                        name: `#${i + 1} - ${username}`,
+                        name: `#${i + 1} - ${displayName}`,
                         value: `**Level:** ${user.level} | **Total XP:** ${totalXp}`,
                         inline: false,
                     });

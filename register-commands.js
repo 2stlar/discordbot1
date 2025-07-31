@@ -127,6 +127,42 @@ const commands = [
         description: 'Push changes to GitHub and restart the bot (Admin only)',
         options: [],
     },
+    {
+        name: 'slowmode',
+        description: 'Set or remove slowmode for the current channel',
+        options: [
+            {
+                name: 'duration',
+                description: 'The slowmode duration in seconds (0 to disable)',
+                type: ApplicationCommandOptionType.Integer,
+                required: true,
+            },
+        ],
+    },
+    {
+        name: 'mute',
+        description: 'Mute a user in the server by assigning a role for a specific duration',
+        options: [
+            {
+                name: 'user',
+                description: 'The user to mute',
+                type: ApplicationCommandOptionType.User,
+                required: true,
+            },
+            {
+                name: 'duration',
+                description: 'The duration of the mute in seconds (1 to 2592000)',
+                type: ApplicationCommandOptionType.Integer,
+                required: true,
+            },
+            {
+                name: 'reason',
+                description: 'The reason for muting the user (optional)',
+                type: ApplicationCommandOptionType.String,
+                required: false,
+            },
+        ],
+    },
 ];
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);

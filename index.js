@@ -216,6 +216,79 @@ client.on('interactionCreate', async (interaction) => {
             console.error('Reload errors:', stderr);
         });
     }
+
+    if (interaction.commandName === 'slowmode') {
+        if (!interaction.member.permissions.has('ManageChannels')) {
+            await interaction.reply({ content: 'You need the **Manage Channels** permission to use this command.', ephemeral: true });
+            return;
+        }
+
+        const duration = interaction.options.getInteger('duration'); // Get the duration from the command options
+
+        if (duration < 0 || duration > 21600) { // Discord's max slowmode duration is 6 hours (21600 seconds)
+            await interaction.reply({ content: 'Please provide a duration between 0 and 21600 seconds.', ephemeral: true });
+            return;
+        }
+
+        try {
+            await interaction.channel.setRateLimitPerUser(duration); // Set the slowmode duration
+            if (duration === 0) {
+                await interaction.reply({ content: 'Slowmode has been disabled for this channel.', ephemeral: false });
+            } else {
+                await interaction.reply({ content: `Slowmode has been set to ${duration} seconds for this channel.`, ephemeral: false });
+            }
+        } catch (error) {
+            console.error('Error setting slowmode:', error);
+            await interaction.reply({ content: 'An error occurred while setting slowmode.', ephemeral: true });
+        }
+    }
+
+    if (interaction.commandName === 'mute') {
+        if (!interaction.member.permissions.has('ModerateMembers')) {
+            await interaction.reply({ content: 'You need the **Moderate Members** permission to use this command.', ephemeral: true });
+            return;
+        }
+
+        const user = interaction.options.getUser('user'); // Get the user to mute
+        const duration = interaction.options.getInteger('duration'); // Get the duration in seconds
+        const reason = interaction.options.getString('reason') || 'No reason provided'; // Get the optional reason
+        const member = interaction.guild.members.cache.get(user.id);
+
+        if (!member) {
+            await interaction.reply({ content: 'The specified user is not in this server.', ephemeral: true });
+            return;
+        }
+
+        const mutedRoleId = '1400572871453184200'; // The ID of the "Muted" role
+        const mutedRole = interaction.guild.roles.cache.get(mutedRoleId);
+
+        if (!mutedRole) {
+            await interaction.reply({ content: 'The "Muted" role could not be found. Please ensure the role ID is correct.', ephemeral: true });
+            return;
+        }
+
+        if (duration <= 0 || duration > 2592000) { // Max duration is 30 days (2592000 seconds)
+            await interaction.reply({ content: 'Please provide a duration between 1 and 2592000 seconds.', ephemeral: true });
+            return;
+        }
+
+        try {
+            // Assign the "Muted" role to the user
+            await member.roles.add(mutedRole, reason);
+            await interaction.reply({ content: `${user.username} has been muted for ${duration} seconds. Reason: ${reason}`, ephemeral: false });
+
+            // Remove the "Muted" role after the specified duration
+            setTimeout(async () => {
+                if (member.roles.cache.has(mutedRole.id)) {
+                    await member.roles.remove(mutedRole, 'Mute duration expired');
+                    console.log(`Removed "Muted" role from ${user.username} after ${duration} seconds.`);
+                }
+            }, duration * 1000); // Convert seconds to milliseconds
+        } catch (error) {
+            console.error('Error muting user:', error);
+            await interaction.reply({ content: 'An error occurred while trying to mute the user.', ephemeral: true });
+        }
+    }
 });
 
 client.on('messageCreate', async (message) => {
