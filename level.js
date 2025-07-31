@@ -1,3 +1,4 @@
+require('dotenv').config();
 const fs = require('fs').promises; // Use the promises API for async file operations
 const mongoose = require('mongoose'); // Import mongoose
 const { createCanvas, loadImage } = require('canvas');
