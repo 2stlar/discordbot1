@@ -123,11 +123,6 @@ const commands = [
         options: [],
     },
     {
-        name: 'reload',
-        description: 'Push changes to GitHub and restart the bot (Admin only)',
-        options: [],
-    },
-    {
         name: 'slowmode',
         description: 'Set or remove slowmode for the current channel',
         options: [

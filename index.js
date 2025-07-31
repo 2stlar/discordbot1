@@ -194,28 +194,7 @@ client.on('interactionCreate', async (interaction) => {
         if (footer) embed.setFooter({ text: footer });
 
         await interaction.reply({ embeds: [embed] });
-    }
-
-    if (interaction.commandName === 'reload') {
-        if (!interaction.member.permissions.has('Administrator')) {
-            await interaction.reply({ content: 'You need Administrator permission to use this command.', ephemeral: true });
-            return;
-        }
-
-        await interaction.reply({ content: 'Reloading bot... Changes will be pushed to GitHub and the bot will restart.', ephemeral: true });
-
-        // Execute Git commands and restart the bot
-        exec('git add . && git commit -m "Bot reload via /reload command" && git push && tmux send-keys -t 0 C-c "node index.js" Enter', (error, stdout, stderr) => {
-            if (error) {
-                console.error('Error during reload:', error);
-                interaction.followUp({ content: `Failed to reload the bot: ${error.message}`, ephemeral: true });
-                return;
-            }
-
-            console.log('Reload output:', stdout);
-            console.error('Reload errors:', stderr);
-        });
-    }
+    };
 
     if (interaction.commandName === 'slowmode') {
         if (!interaction.member.permissions.has('ManageChannels')) {
