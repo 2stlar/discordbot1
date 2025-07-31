@@ -138,7 +138,12 @@ function setupLevelSystem(client) {
 
         const leveledUp = await addXp(message.author.id, Math.floor(Math.random() * 10) + 5); // 5-15 XP per message
         if (leveledUp) {
-            message.channel.send(`${message.author} leveled up to **${leveledUp}**! 🎉`);
+            const levelUpChannel = client.channels.cache.get('1400588951323934830'); // Get the channel by ID
+            if (levelUpChannel) {
+                levelUpChannel.send(`${message.author} leveled up to **${leveledUp}**! 🎉`);
+            } else {
+                console.error('Level-up channel not found.');
+            }
         }
     });
 
