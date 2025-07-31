@@ -177,7 +177,7 @@ function setupLevelSystem(client) {
                     }
 
                     leaderboardEmbed.addFields({
-                        name: `#${i + 1} - <@${user.userId}>`,
+                        name: `#${i + 1} - User ID: ${user.userId}`,
                         value: `**Level:** ${user.level} | **Total XP:** ${totalXp}`,
                         inline: false,
                     });
