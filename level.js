@@ -174,7 +174,7 @@ function setupLevelSystem(client) {
 
         if (interaction.commandName === 'leaderboard') {
             try {
-                await interaction.deferReply(); // Acknowledge the interaction to avoid timeout
+                await interaction.deferReply(); // Acknowledge the interaction immediately
 
                 const topUsers = await Level.find().sort({ level: -1, xp: -1 }).limit(10);
 
@@ -212,9 +212,12 @@ function setupLevelSystem(client) {
                 });
             } catch (error) {
                 console.error('Error handling /leaderboard command:', error);
-                if (!interaction.replied) {
-                    await interaction.editReply({
+
+                // Handle cases where the interaction might not have been replied to
+                if (!interaction.replied && !interaction.deferred) {
+                    await interaction.reply({
                         content: 'An error occurred while processing your request.',
+                        ephemeral: true,
                     });
                 }
             }
