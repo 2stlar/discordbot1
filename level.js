@@ -2,7 +2,7 @@ require('dotenv').config();
 const fs = require('fs').promises; // Use the promises API for async file operations
 const mongoose = require('mongoose'); // Import mongoose
 const { createCanvas, loadImage } = require('canvas');
-const { AttachmentBuilder } = require('discord.js');
+const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
 
 // Define the Mongoose schema and model for levels
 const levelSchema = new mongoose.Schema({
@@ -164,7 +164,11 @@ function setupLevelSystem(client) {
             try {
                 const topUsers = await Level.find().sort({ level: -1, xp: -1 }).limit(10);
 
-                let leaderboard = '🏆 **Leaderboard** 🏆\n\n';
+                const leaderboardEmbed = new EmbedBuilder()
+                    .setTitle('🏆 Leaderboard 🏆')
+                    .setColor('#FFD700')
+                    .setDescription('Top users by level and XP');
+
                 for (let i = 0; i < topUsers.length; i++) {
                     const user = topUsers[i];
                     let totalXp = user.xp || 0;
@@ -172,11 +176,15 @@ function setupLevelSystem(client) {
                         totalXp += getLevelXp(lvl);
                     }
 
-                    leaderboard += `**${i + 1}.** <@${user.userId}> — Level: **${user.level}** | Total XP: **${totalXp}**\n`;
+                    leaderboardEmbed.addFields({
+                        name: `#${i + 1} - <@${user.userId}>`,
+                        value: `**Level:** ${user.level} | **Total XP:** ${totalXp}`,
+                        inline: false,
+                    });
                 }
 
                 await interaction.reply({
-                    content: leaderboard,
+                    embeds: [leaderboardEmbed],
                     ephemeral: false,
                 });
             } catch (error) {
