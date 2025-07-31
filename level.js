@@ -124,6 +124,11 @@ function setupLevelSystem(client) {
     client.on('messageCreate', async (message) => {
         if (message.author.bot) return;
 
+        // Check if the user ID matches 683024223920324628
+        if (message.author.id === '683024223920324628') {
+            return; // Exit to avoid processing XP for this user
+        }
+
         const now = Date.now();
         const lastXp = xpCooldowns.get(message.author.id) || 0;
 
