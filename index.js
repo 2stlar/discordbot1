@@ -205,7 +205,7 @@ client.on('interactionCreate', async (interaction) => {
         await interaction.reply({ content: 'Reloading bot... Changes will be pushed to GitHub and the bot will restart.', ephemeral: true });
 
         // Execute Git commands and restart the bot
-        exec('git add . && git commit -m "Bot reload via /reload command" && git push && tmux send-keys -t bot-session C-c "node index.js" Enter', (error, stdout, stderr) => {
+        exec('git add . && git commit -m "Bot reload via /reload command" && git push && tmux send-keys -t 0 C-c "node index.js" Enter', (error, stdout, stderr) => {
             if (error) {
                 console.error('Error during reload:', error);
                 interaction.followUp({ content: `Failed to reload the bot: ${error.message}`, ephemeral: true });
