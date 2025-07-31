@@ -140,10 +140,12 @@ function setupLevelSystem(client) {
         if (leveledUp) {
             const levelUpChannel = client.channels.cache.get('1400588951323934830'); // Get the channel by ID
             if (levelUpChannel) {
-                levelUpChannel.send(`${message.author} leveled up to **${leveledUp}**! 🎉`);
+                levelUpChannel.send(`${message.author.username} leveled up to **${leveledUp}**! 🎉`);
             } else {
                 console.error('Level-up channel not found.');
+                return;
             }
+             channel.send(`<@${user.id}> leveled up to **Level ${leveledUp}**!`);
         }
     });
 
